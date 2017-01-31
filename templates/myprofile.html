@@ -1,0 +1,18 @@
+<!doctype html>
+<title>My Events</title>
+<p> Hi </p>
+{% for event in myEvents %}
+
+<a href= '{{url_for("showEvent", id = event.id)}}'>
+<div class = "eventDiv">
+<h2>{{event.name}}</h2>
+<h3>{{event.date}}</h3>
+</div>
+</a>
+
+
+{% endfor %}
+
+<a href="{{url_for('addEvent')}}"> Make a New Event </a>
+
+</html>

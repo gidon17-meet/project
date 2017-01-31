@@ -1,0 +1,19 @@
+<!doctype html>
+<title> Add Event </title>
+<form action="{{ url_for('addEvent') }}" method='post'>
+  Event Name:<br>
+  <input type="text" name="name"><br>
+  Date:<br>
+  <input type="text" name="date"><br>
+  Location:<br>
+  <input type="text" name="location"><br>
+  Attendees:<br>
+
+{%for member in members%}
+<input type="checkbox" name="memberNames" value="{{member.name}}">{{member.name}}<br>
+{%endfor%}
+
+
+  <input type="submit" value="Send">
+</form>
+</html>

@@ -33,7 +33,7 @@ def login():
 			login_session['name'] = member.name
 			login_session['email'] = member.email
 			login_session['id'] = member.id
-			return redirect(url_for('main'))
+			return redirect(url_for('myProfile'))
 		else:
 			flash('Incorrect username/password combination')
 			return redirect(url_for('login'))
@@ -62,8 +62,34 @@ def newMember():
         session.commit()
         return redirect(url_for('login'))
 
+@app.route('/myprofile', methods  = ['GET'])
+def myProfile():
+	if "id" not in login_session:
+		flash("You must be logged in to view this page")
+		return redirect(url_for("login"))
+	else:
+		myEvents = session.query(Event).filter_by(owner_id = login_session["id"]).all()
+		return render_template("myProfile.html", myEvents = myEvents)
+		
 
-
+@app.route('/addEvent', methods = ['GET', 'POST'])
+def addEvent():
+	if request.method == 'GET':
+		members = session.query(Member).all()
+		return render_template("addEvent.html", members = members)
+	else:
+		name = request.form['name']
+		location = request.form['location']
+		date = request.form['date']
+		invitees = request.form.getlist('memberNames')
+		newEvent = Event(name = name, date = date, owner_id = login_session['id'])
+		session.add(newEvent)
+		for invitee in invitees:
+			assoc = InvitesAssociation(member_id = invitee, event_id = newEvent.id , attending = False)
+			session.add(assoc)
+		session.commit()
+		flash('succesfully created event!')
+		return redirect(url_for('myProfile'))
 
 if __name__ == '__main__':
 	app.run(debug=True)
