@@ -1,6 +1,7 @@
 <!doctype html>
 <title>My Events</title>
-<p> Hi </p>
+<p> hey {{members.name}}, you can now view your events! </p>
+
 {% for event in myEvents %}
 
 <!--a href= '{!{!url_for("showEvent", id = event.id)!}!}'-->

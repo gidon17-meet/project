@@ -3,10 +3,22 @@ from flask import flash, redirect, Flask, render_template, request, url_for
 from flask import session as login_session
 from model import * 
 
+
+
 app = Flask(__name__)
 
 app.secret_key='this is my password'
 
+#email serever:
+"""MAIL_SERVER =  'smtp.googlemail.com'
+MAL_PORT = 465
+MAIL_USE_TLS = False
+MAIL_USE_SSL = True
+MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+
+#admin list:
+ADMINS = ['gidonschreiber@gmail.com']"""
 @app.route("/")
 def main():
     return render_template('meet.html')
@@ -62,14 +74,15 @@ def newMember():
         session.commit()
         return redirect(url_for('login'))
 
-@app.route('/myprofile', methods  = ['GET'])
+@app.route('/myprofile', methods  = ['GET', 'POST'] )
 def myProfile():
 	if "id" not in login_session:
 		flash("You must be logged in to view this page")
 		return redirect(url_for("login"))
 	else:
+		members = session.query(Member).filter_by(email= login_session["email"]).first()
 		myEvents = session.query(Event).filter_by(owner_id = login_session["id"]).all()
-		return render_template("myProfile.html", myEvents = myEvents)
+		return render_template("myProfile.html", myEvents = myEvents, members = members)
 		
 
 @app.route('/addEvent', methods = ['GET', 'POST'])
@@ -91,5 +104,6 @@ def addEvent():
 		flash('succesfully created event!')
 		return redirect(url_for('myProfile'))
 
+		
 if __name__ == '__main__':
 	app.run(debug=True)
