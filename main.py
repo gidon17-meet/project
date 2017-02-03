@@ -41,7 +41,7 @@ def login():
 			return redirect(url_for(login))
 		if verify_password(email, password):
 			member = session.query(Member).filter_by(email=email).one()
-			flash('Login Successful, welcome, %s' % member.name)
+			#flash('Login Successful, welcome, %s' % member.name)
 			login_session['name'] = member.name
 			login_session['email'] = member.email
 			login_session['id'] = member.id
@@ -103,7 +103,11 @@ def addEvent():
 		session.commit()
 		flash('succesfully created event!')
 		return redirect(url_for('myProfile'))
-
+'''@app.route('/logout', methods = ['GET', 'POST'])'''
+'''def logout():
+	if request.method == 'GET' and "id" in login_session:
+		return render_template("logout.html", user = Member.id)'''
+	
 		
 if __name__ == '__main__':
 	app.run(debug=True)
