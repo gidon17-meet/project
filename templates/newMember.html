@@ -1,4 +1,6 @@
-<title>Sign Up Here</title>
+{%block title%}Sign Up Here{%endblock%}
+{%block body%}
+
 <div class = 'flash'>
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -25,4 +27,6 @@
   <input type="submit" value="Sign up">
 </form>
 <p> Already have an account? Go <a href={{url_for('login')}}>Here!</a>
+{%endblock%}
+
 

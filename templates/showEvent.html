@@ -1,5 +1,8 @@
 <!doctype html>
-<title> Show Event </title>
+{%block title%} Show Event {%endblock%}
+{%block body%}
+
 <h2>Date: {{event.date}} </h2>
 <h2>Location: {{event.location}} </h2>
 <a href = "{{url_for('deleteEvent', event_id= event.id)}}"> Delete </a>
+{%endblock%}
