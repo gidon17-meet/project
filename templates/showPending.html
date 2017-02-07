@@ -1,0 +1,7 @@
+<!doctype html>
+<title> Show Pending </title>
+<h2>Date: {{event.date}} </h2>
+<h2>Location: {{event.location}} </h2>
+
+<h1>Do you want to attend the event?</h1>
+<form action="{{ url_for('showPending', event_id = event.id) }}" method='post'><input type="submit" value="Attend"> </form>

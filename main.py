@@ -82,7 +82,10 @@ def myProfile():
 	else:
 		members = session.query(Member).filter_by(email= login_session["email"]).first()
 		myEvents = session.query(Event).filter_by(owner_id = login_session["id"]).all()
-		return render_template("myProfile.html", myEvents = myEvents, members = members)
+		pending_invites = session.query(InvitesAssociation).filter_by(member_id = login_session['id']).filter_by(attending=False).all()
+		attending_events = session.query(InvitesAssociation).filter_by(member_id=login_session['id']).filter_by(attending = True).all()
+		return render_template("myProfile.html", myEvents = myEvents, members = members, pending_invites=pending_invites, attending_events= attending_events)
+
 		
 
 @app.route('/addEvent', methods = ['GET', 'POST'])
@@ -95,19 +98,43 @@ def addEvent():
 		location = request.form['location']
 		date = request.form['date']
 		invitees = request.form.getlist('memberNames')
-		newEvent = Event(name = name, date = date, owner_id = login_session['id'])
+		newEvent = Event(name = name, location = location, date = date, owner_id = login_session['id'])
+		print (newEvent)
 		session.add(newEvent)
 		for invitee in invitees:
-			assoc = InvitesAssociation(member_id = invitee, event_id = newEvent.id , attending = False)
+			member = session.query(Member).filter_by(id=invitee).one()
+			assoc = InvitesAssociation(member = member, event = newEvent , attending = False)
 			session.add(assoc)
 		session.commit()
 		flash('succesfully created event!')
 		return redirect(url_for('myProfile'))
-'''@app.route('/logout', methods = ['GET', 'POST'])'''
-'''def logout():
-	if request.method == 'GET' and "id" in login_session:
-		return render_template("logout.html", user = Member.id)'''
-	
+@app.route('/showEvent/<int:event_id>', methods = ['GET', 'POST'])
+def showEvent(event_id):
+	event=session.query(Event).filter_by(id=event_id).one()
+	return render_template("showEvent.html", event = event)
+
+@app.route('/showPending/<int:event_id>', methods = ['GET', 'POST'])
+def showPending(event_id):
+	event = session.query(Event).filter_by(id=event_id).one()
+	if request.method == 'GET':
 		
+		return render_template("showPending.html", event = event)
+	if request.method == 'POST':
+		assoc = session.query(InvitesAssociation).filter_by(event_id=event.id).filter_by(member_id = login_session['id']).one()
+		assoc.attending = True
+		session.add(assoc)
+		session.commit()
+		flash("You are attending!")
+		return redirect(url_for('myProfile'))
+@app.route('/deleteEvent/<int:event_id>', methods = ['GET'])
+def deleteEvent(event_id):
+	event = session.query(Event).filter_by(id=event_id).one()
+	assoc = session.query(InvitesAssociation).filter_by(event=event).all()
+	for i in assoc:
+		session.delete(i)
+	session.delete(event)
+	session.commit()
+	return redirect (url_for('myProfile'))
+
 if __name__ == '__main__':
 	app.run(debug=True)

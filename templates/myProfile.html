@@ -6,8 +6,7 @@
 
 <!--a href= '{!{!url_for("showEvent", id = event.id)!}!}'-->
 <div class = "eventDiv">
-<h2>{{event.name}}</h2>
-<h3>{{event.date}}</h3>
+<a href= "{{url_for('showEvent', event_id= event.id )}}">{{event.name}}</a>
 </div>
 </a>
 
@@ -17,4 +16,13 @@
 <a href="{{url_for('addEvent')}}"> Make a New Event </a>
 <br> 
 <a href="{{url_for('login')}}"> Log Out </a>
+<h1> Pending Invites: </h1>
+{%for pending in pending_invites %}
+<div class = "pendingDiv">
+<a href= "{{url_for('showPending', event_id = pending.event.id)}}">{{pending.event.name}}</a>
+{% endfor %}
+<h1> Events you are attending: </h1>
+{% for attending in attending_events%}
+<p>{{attending.event.name}}</p>
+{% endfor %}
 </html>

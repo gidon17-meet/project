@@ -1,0 +1,5 @@
+<!doctype html>
+<title> Show Event </title>
+<h2>Date: {{event.date}} </h2>
+<h2>Location: {{event.location}} </h2>
+<a href = "{{url_for('deleteEvent', event_id= event.id)}}"> Delete </a>
