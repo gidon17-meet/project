@@ -1,6 +1,13 @@
-<!doctype html>
-<title>My Events</title>
+{% extends "layout.html" %}
+
+{%block title%}My Events{%endblock%}
 <p> hey {{members.name}}, you can now view your events! </p>
+
+
+
+
+
+{% block body %}
 
 {% for event in myEvents %}
 
@@ -25,4 +32,6 @@
 {% for attending in attending_events%}
 <p>{{attending.event.name}}</p>
 {% endfor %}
-</html>
+
+{%endblock%}
+
